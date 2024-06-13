@@ -32,7 +32,7 @@ return new class extends Migration
 
             $table->dateTime('last_login')->nullable();
 
-            $table->unsignedBiginteger('created_by')->nullable()->default(auth()->id() ?? null);
+            $table->unsignedBiginteger('created_by')->nullable();
             $table->unsignedBiginteger('updated_by')->nullable();
 
             $table->timestamps();

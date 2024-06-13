@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('days');
             $table->boolean('is_active')->default(true);
             
-            $table->unsignedBiginteger('created_by')->nullable()->default(auth()->id() ?? null);
+            $table->unsignedBiginteger('created_by')->nullable();
             $table->unsignedBiginteger('updated_by')->nullable();
             
             $table->timestamps();

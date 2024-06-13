@@ -25,7 +25,7 @@ return new class extends Migration
 
             $table->float('price', 10, 3);
 
-            $table->unsignedBiginteger('created_by')->nullable()->default(auth()->id() ?? null);
+            $table->unsignedBiginteger('created_by')->nullable();
             $table->unsignedBiginteger('updated_by')->nullable();
 
             $table->timestamps();
