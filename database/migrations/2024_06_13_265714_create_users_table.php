@@ -18,13 +18,13 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
-            $table->unsignedBiginteger('collaborator_id');
+            $table->unsignedBiginteger('collaborator_id')->nullable();
             $table->foreign('collaborator_id')->references('id')
                  ->on('collaborators')->onDelete('cascade');
 
             $table->boolean('is_active')->default(true);
             
-            $table->unsignedBiginteger('role_id');
+            $table->unsignedBiginteger('role_id')->default(1);
             $table->foreign('role_id')->references('id')
                  ->on('roles')->onDelete('cascade');
 
@@ -32,8 +32,8 @@ return new class extends Migration
 
             $table->dateTime('last_login')->nullable();
 
-            $table->unsignedBiginteger('created_by');
-            $table->unsignedBiginteger('updated_by');
+            $table->unsignedBiginteger('created_by')->nullable();
+            $table->unsignedBiginteger('updated_by')->nullable();
 
             $table->timestamps();
         });
