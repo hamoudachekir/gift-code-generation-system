@@ -6,6 +6,7 @@ namespace App\Models;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -23,6 +24,13 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'collaborator_id',
+        'is_active',
+        'role_id',
+        'last_login',
+
+        'created_by',
+        'updated_by',
     ];
 
     /**
@@ -50,4 +58,17 @@ class User extends Authenticatable implements FilamentUser
         return true;
         return str_ends_with($this->email, '@gmail.com') && $this->hasVerifiedEmail();
     }
+
+
+    
+    public function collaborator(): BelongsTo
+    {
+        return $this->belongsTo(Collaborator::class, 'collaborator_id', 'id');
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Collaborator::class, 'role_id', 'id');
+    }
+
 }
