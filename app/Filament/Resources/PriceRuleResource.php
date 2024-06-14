@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\ActionSize;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -72,7 +73,7 @@ class PriceRuleResource extends Resource
                 Forms\Components\Toggle::make('is_active')
                     ->label('Active ?')
                     ->default(true),
-            ]);
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table
@@ -120,20 +121,29 @@ class PriceRuleResource extends Resource
             ->actions([
 
                 Tables\Actions\EditAction::make()
-                ->icon('heroicon-m-pencil-square')
-                ->iconButton()
-                ->color('info')
-                ->extraAttributes([
-                    'title' => 'Modifier',
-                ]),
+                    ->icon('heroicon-m-pencil-square')
+                    ->iconButton()
+                    ->color('info')
+                    ->extraAttributes([
+                        'title' => 'Modifier',
+                    ])
+                    ->mutateFormDataUsing(function (array $data): array {
+                        $data['updated_by'] = auth()->id();
+                
+                        return $data;
+                    })
+                    ->stickyModalHeader()
+                    ->stickyModalFooter()
+                    ->modalWidth(MaxWidth::Medium)
+                    ->slideOver(),
                 
                 Tables\Actions\DeleteAction::make()
-                ->icon('heroicon-m-trash')
-                ->iconButton()
-                ->color('danger')
-                ->extraAttributes([
-                    'title' => 'Supprimer',
-                ]),
+                    ->icon('heroicon-m-trash')
+                    ->iconButton()
+                    ->color('danger')
+                    ->extraAttributes([
+                        'title' => 'Supprimer',
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

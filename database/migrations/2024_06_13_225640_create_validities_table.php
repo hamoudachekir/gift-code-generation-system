@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->integer('days');
+            $table->integer('days')->unique();
             $table->boolean('is_active')->default(true);
             
             $table->unsignedBiginteger('created_by')->nullable();

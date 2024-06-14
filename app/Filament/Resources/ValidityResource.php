@@ -8,6 +8,7 @@ use App\Models\Validity;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -48,6 +49,7 @@ class ValidityResource extends Resource
                     ->label('Jour(s)')
                     ->required()
                     ->numeric()
+                    ->unique()
                     ->columnSpan('full'),
 
                 Forms\Components\Toggle::make('is_active')
@@ -98,7 +100,17 @@ class ValidityResource extends Resource
                     ->color('info')
                     ->extraAttributes([
                         'title' => 'Modifier',
-                    ]),
+                    ])
+                    ->mutateFormDataUsing(function (array $data): array {
+                        $data['updated_by'] = auth()->id();
+                 
+                        return $data;
+                    })
+                    ->stickyModalHeader()
+                    ->stickyModalFooter()
+                    ->modalWidth(MaxWidth::Medium)
+                    ->slideOver(),
+                    
                 Tables\Actions\DeleteAction::make()
                     ->icon('heroicon-m-trash')
                     ->iconButton()
