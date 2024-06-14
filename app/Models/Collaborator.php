@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\QuotaPer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -31,6 +32,18 @@ class Collaborator extends Model
         'created_by',
         'updated_by',
     ];
+
+
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'quota_per' => QuotaPer::class,
+    ];
+
 
 
 

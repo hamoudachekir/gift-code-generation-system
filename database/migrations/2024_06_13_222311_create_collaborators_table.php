@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\QuotaPer;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->boolean('is_free');
             $table->integer('quota');
-            $table->enum('quota_per', [0, 1, 30, 60, 120, 240, 365, 740]);
+            $table->enum('quota_per', QuotaPer::getValues());
 
             $table->float('price', 10, 3);
 
