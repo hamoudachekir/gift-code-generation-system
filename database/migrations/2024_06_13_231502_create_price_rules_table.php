@@ -21,6 +21,10 @@ return new class extends Migration
             $table->integer('quota');
             $table->string('operator');
 
+            $table->float('price', 10, 3);
+
+            $table->boolean('is_active')->default(true);
+
             $table->unsignedBiginteger('created_by')->nullable();
             $table->unsignedBiginteger('updated_by')->nullable();
 

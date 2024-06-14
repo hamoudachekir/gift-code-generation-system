@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\HasName;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasName, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -22,6 +23,8 @@ class User extends Authenticatable implements FilamentUser
      */
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'collaborator_id',
@@ -59,6 +62,13 @@ class User extends Authenticatable implements FilamentUser
         return str_ends_with($this->email, '@gmail.com') && $this->hasVerifiedEmail();
     }
 
+    public function getFilamentName(): string
+    {
+        return ($this->last_name && $this->first_name) ? 
+                    "{$this->first_name} {$this->last_name}" : 
+                    "{$this->name}";
+    }
+
 
     
     public function collaborator(): BelongsTo
@@ -69,6 +79,17 @@ class User extends Authenticatable implements FilamentUser
     public function role(): BelongsTo
     {
         return $this->belongsTo(Collaborator::class, 'role_id', 'id');
+    }
+
+
+    public function is_collaborator()
+    {
+        return ($this->role_id == Role::COLLABORATOR);
+    }
+
+    public function is_admin()
+    {
+        return ($this->role_id == Role::ADMIN);
     }
 
 }

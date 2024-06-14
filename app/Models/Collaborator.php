@@ -61,4 +61,11 @@ class Collaborator extends Model
         return $this->hasMany(GiftCard::class, 'collaborator_id');
     }
 
+
+
+    public function is_active()
+    {
+        return $this->is_active ?? false ;
+    }
+
 }

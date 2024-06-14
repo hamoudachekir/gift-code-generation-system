@@ -20,6 +20,8 @@ class PriceRule extends Model
         'quota',
         'operator',
 
+        'price',
+
         'created_by',
         'updated_by',
     ];

@@ -8,20 +8,18 @@ use App\Models\Validity;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\ActionSize;
 use Filament\Tables;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Resources\Components\Tab;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ValidityResource extends Resource
 {
     protected static ?string $model = Validity::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-  
     public static function getModelLabel(): string
     {
         return __('Validité');
@@ -37,25 +35,25 @@ class ValidityResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
-                ->label('Titre')
-                ->required()
-                ->maxLength(255)
-                ->columnSpan('full'),
+                    ->label('Titre')
+                    ->required()
+                    ->maxLength(255)
+                    ->columnSpan('full'),
 
-                Forms\Components\Textarea::make('description')
-                ->label('Description')
-                ->columnSpan('full'),
+                Forms\Components\RichEditor::make('description')
+                    ->label('Description')
+                    ->columnSpan('full'),
 
                 Forms\Components\TextInput::make('days')
-                ->label('Jour(s)')
-                ->required()
-                ->numeric()
-                ->columnSpan('full'),
+                    ->label('Jour(s)')
+                    ->required()
+                    ->numeric()
+                    ->columnSpan('full'),
 
-                Forms\Components\Checkbox::make('is_active')
-                ->label('Active ?')
-                ->default(true)
-                ->columnSpan('full'),
+                Forms\Components\Toggle::make('is_active')
+                    ->label('Active ?')
+                    ->default(true)
+                    ->columnSpan('full'),
             ]);
     }
 
@@ -64,34 +62,50 @@ class ValidityResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                ->label('Titre')
-                ->searchable()
-                ->sortable(),
+                    ->label('Titre')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('description')
-                ->label('Description'),
+                    ->label('Description')
+                    ->placeholder('Pas de description.')
+                    ->html()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('days')
-                ->label('Jour(s)')
-                ->searchable()
-                ->sortable(),
+                    ->label('Jour(s)')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
 
-                Tables\Columns\TextColumn::make('is_active')
-                ->label('Active ?'),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Active ?')
+                    ->toggleable(),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_active')
+                    ->label('Active ?')
+                    ->placeholder('Tout')
+                    ->trueLabel('Les actives')
+                    ->falseLabel('Les non actives')
+                    ->native(false)
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                ->icon('heroicon-m-pencil-square')
-                ->iconButton()
-                ->color('info')
-                ->size(ActionSize::Large)
-                ->extraAttributes([
-                    'title' => 'Modifier',
-                    'class' => 'mx-auto my-8',
-                ]),
+                    ->icon('heroicon-m-pencil-square')
+                    ->iconButton()
+                    ->color('info')
+                    ->extraAttributes([
+                        'title' => 'Modifier',
+                    ]),
+                Tables\Actions\DeleteAction::make()
+                    ->icon('heroicon-m-trash')
+                    ->iconButton()
+                    ->color('danger')
+                    ->extraAttributes([
+                        'title' => 'Supprimer',
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -100,21 +114,10 @@ class ValidityResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListValidities::route('/'),
-            'create' => Pages\CreateValidity::route('/create'),
-            'edit' => Pages\EditValidity::route('/{record}/edit'),
+            'index' => Pages\ManageValidities::route('/'),
         ];
     }
-
-
 }
