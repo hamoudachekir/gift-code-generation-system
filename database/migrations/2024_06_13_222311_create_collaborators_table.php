@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->boolean('is_free');
             $table->integer('quota');
-            $table->enum('quota_per', QuotaPer::getValues());
+            $table->enum('quota_per', ['0','1','7','30']);
 
             $table->float('price', 10, 3);
 
