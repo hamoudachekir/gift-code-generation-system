@@ -15,15 +15,11 @@ class ManagePriceRules extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->mutateFormDataUsing(function (array $data): array {
-                    $data['created_by'] = auth()->id();
-            
-                    return $data;
-                })
                 ->stickyModalHeader()
                 ->stickyModalFooter()
                 ->modalWidth(MaxWidth::Medium)
-                ->slideOver(),
+                ->slideOver()
+                ->closeModalByClickingAway(false),
         ];
     }
 }

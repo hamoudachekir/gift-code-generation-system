@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\ValidityResource\Pages;
+namespace App\Filament\Resources\CollaboratorResource\Pages;
 
-use App\Filament\Resources\ValidityResource;
+use App\Filament\Resources\CollaboratorResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 use Filament\Support\Enums\MaxWidth;
 
-class ManageValidities extends ManageRecords
+class ManageCollaborators extends ManageRecords
 {
-    protected static string $resource = ValidityResource::class;
+    protected static string $resource = CollaboratorResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -17,7 +17,7 @@ class ManageValidities extends ManageRecords
             Actions\CreateAction::make()
             ->stickyModalHeader()
             ->stickyModalFooter()
-            ->modalWidth(MaxWidth::Medium)
+            ->modalWidth(MaxWidth::FourExtraLarge)
             ->slideOver()
             ->closeModalByClickingAway(false),
         ];

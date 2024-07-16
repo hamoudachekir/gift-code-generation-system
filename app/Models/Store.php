@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
 use Sushi\Sushi;
 
 class Store extends Model
@@ -11,6 +12,35 @@ class Store extends Model
     use HasFactory;
     use Sushi;
 
+
+    protected $schema = [
+        "store_id"            => "integer",
+        "store_slug"          => "string",
+        "store_name"          => "string",
+        "store_logo"          => "string",
+        "store_images"        => "string",
+        "store_desc"          => "string",
+        "store_mail"          => "string",
+        "store_manager_name"  => "string",
+        "store_mobile"        => "string",
+        "store_login"         => "string",
+        "store_password"      => 'string',
+        "store_active"        => "string",
+        "store_featured"      => "string",
+        "store_website"       => "string",
+        "store_facebook"      => "string",
+        "store_instagram"     => "string",
+        "store_auth_email"    => "string",
+        "store_auth_password" => 'string',
+        "store_smt_config"    => "string",
+        "store_sms_config"    => 'string',
+        "allow_subscribe"     => "string",
+        "created_at"          => "string",
+        "updated_at"          => "string",
+        "entry_by"            => 'string',
+        "store_mobile_logo"   => 'string',
+        "forced_mobile_logo"  => "string"
+    ];
 
     public function getRows()
     {
@@ -388,4 +418,9 @@ class Store extends Model
         return true;
     }
 
+    protected function afterMigrate(Blueprint $table)
+    {
+        $table->index('store_id');
+    }
+    
 }

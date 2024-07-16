@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,9 +22,16 @@ class ValidityResource extends Resource
 
     // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 2;
+
     public static function getModelLabel(): string
     {
-        return __('Validité');
+        return __('Validité Carte Cadeau');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Validités Carte Cadeau');
     }
 
     public static function getNavigationGroup(): ?string
@@ -49,11 +57,13 @@ class ValidityResource extends Resource
                     ->label('Jour(s)')
                     ->required()
                     ->numeric()
-                    ->unique()
+                    ->unique(ignoreRecord: true)
                     ->columnSpan('full'),
 
                 Forms\Components\Toggle::make('is_active')
                     ->label('Active ?')
+                    ->onColor('success')
+                    ->offColor('danger')
                     ->default(true)
                     ->columnSpan('full'),
             ]);
@@ -94,30 +104,23 @@ class ValidityResource extends Resource
                     ->native(false)
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->icon('heroicon-m-pencil-square')
-                    ->iconButton()
-                    ->color('info')
-                    ->extraAttributes([
-                        'title' => 'Modifier',
-                    ])
-                    ->mutateFormDataUsing(function (array $data): array {
-                        $data['updated_by'] = auth()->id();
-                 
-                        return $data;
-                    })
-                    ->stickyModalHeader()
-                    ->stickyModalFooter()
-                    ->modalWidth(MaxWidth::Medium)
-                    ->slideOver(),
-                    
-                Tables\Actions\DeleteAction::make()
-                    ->icon('heroicon-m-trash')
-                    ->iconButton()
-                    ->color('danger')
-                    ->extraAttributes([
-                        'title' => 'Supprimer',
-                    ]),
+                ActionGroup::make([
+                    Tables\Actions\ViewAction::make()
+                        ->color('info')
+                        ->stickyModalHeader()
+                        ->stickyModalFooter()
+                        ->modalWidth(MaxWidth::Medium)
+                        ->slideOver()
+                        ->closeModalByClickingAway(false),
+                    Tables\Actions\EditAction::make()
+                        ->color('success')
+                        ->stickyModalHeader()
+                        ->stickyModalFooter()
+                        ->modalWidth(MaxWidth::Medium)
+                        ->slideOver()
+                        ->closeModalByClickingAway(false),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -46,8 +46,6 @@ class Collaborator extends Model
 
 
 
-
-
     public function stores(): BelongsToMany
     {
         return $this->belongsToMany(Store::class);

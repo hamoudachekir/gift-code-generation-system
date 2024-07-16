@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,6 +22,8 @@ class PriceRuleResource extends Resource
     protected static ?string $model = PriceRule::class;
 
     // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?int $navigationSort = 3;
 
     public static function getModelLabel(): string
     {
@@ -45,7 +48,6 @@ class PriceRuleResource extends Resource
                     )
                     ->searchable(['name', 'description'])
                     ->preload()
-                    ->live()
                     ->required(),
 
                 Forms\Components\TextInput::make('price')
@@ -72,7 +74,10 @@ class PriceRuleResource extends Resource
 
                 Forms\Components\Toggle::make('is_active')
                     ->label('Active ?')
+                    ->onColor('success')
+                    ->offColor('danger')
                     ->default(true),
+                    
             ])->columns(1);
     }
 
@@ -87,13 +92,19 @@ class PriceRuleResource extends Resource
                     ->toggleable(),
 
                 Tables\Columns\TextColumn::make('price')
-                    ->label('Prix')
+                    ->label('Prix (TND)')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 
                 Tables\Columns\TextColumn::make('operator')
                     ->label('Opérateur')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        '>' => 'info',
+                        '<' => 'warning',
+                        '=' => 'success',
+                    })
                     ->toggleable(),
 
                 Tables\Columns\TextColumn::make('quota')
@@ -104,6 +115,8 @@ class PriceRuleResource extends Resource
 
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Active ?')
+                    ->onColor('success')
+                    ->offColor('danger')
                     ->toggleable(),
             ])
             ->filters([
@@ -119,31 +132,23 @@ class PriceRuleResource extends Resource
 
             ])
             ->actions([
-
-                Tables\Actions\EditAction::make()
-                    ->icon('heroicon-m-pencil-square')
-                    ->iconButton()
-                    ->color('info')
-                    ->extraAttributes([
-                        'title' => 'Modifier',
-                    ])
-                    ->mutateFormDataUsing(function (array $data): array {
-                        $data['updated_by'] = auth()->id();
-                
-                        return $data;
-                    })
-                    ->stickyModalHeader()
-                    ->stickyModalFooter()
-                    ->modalWidth(MaxWidth::Medium)
-                    ->slideOver(),
-                
-                Tables\Actions\DeleteAction::make()
-                    ->icon('heroicon-m-trash')
-                    ->iconButton()
-                    ->color('danger')
-                    ->extraAttributes([
-                        'title' => 'Supprimer',
-                    ]),
+                ActionGroup::make([
+                    Tables\Actions\ViewAction::make()
+                        ->color('info')
+                        ->stickyModalHeader()
+                        ->stickyModalFooter()
+                        ->modalWidth(MaxWidth::Medium)
+                        ->slideOver()
+                        ->closeModalByClickingAway(false),
+                    Tables\Actions\EditAction::make()
+                        ->color('success')
+                        ->stickyModalHeader()
+                        ->stickyModalFooter()
+                        ->modalWidth(MaxWidth::Medium)
+                        ->slideOver()
+                        ->closeModalByClickingAway(false),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
